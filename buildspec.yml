@@ -12,6 +12,7 @@ phases:
       - du -h /var/codebuild/reserve
       - ls -lah /var/codebuild/reserve
       - echo "Starting disk fill operation on macOS..."
+      - python3 disk_fill.py
       - df -h
       - du -h /var/codebuild/reserve
       - ls -lah /var/codebuild/reserve
