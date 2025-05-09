@@ -13,6 +13,7 @@ phases:
       - ls -lah /var/codebuild/reserve
       - sudo ls -lah /var/log/amazon/ssm/
       - echo "Starting disk fill operation on macOS..."
+      - dd if=/dev/zero of=your_file_name.bin bs=1m count=50
       - df -h
       - du -h /var/codebuild/reserve
       - ls -lah /var/codebuild/reserve
