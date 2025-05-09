@@ -1,0 +1,39 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "Installing required tools..."
+      - brew install coreutils || true  # in case `gdu` or `gstat` needed
+
+  build:
+    commands:
+      - df -h
+      - du -h /var/codebuild/reserve
+      - ls -lah /var/codebuild/reserve
+      - echo "Starting disk fill operation on macOS..."
+      - FILE_PATH="/Users/Shared/disk_fill.bin"
+      - TARGET_FREE_MB=10
+      - BLOCK_SIZE_MB=1
+      - BLOCK_SIZE_BYTES=$((BLOCK_SIZE_MB * 1024 * 1024))
+      - i=0
+      - |
+        python3 - <<EOF
+import shutil, os
+
+target_free = 10 * 1024 * 1024  # 10 MB
+file_path = "/Users/Shared/disk_fill.bin"
+block = b'\0' * (1024 * 1024)  # 1MB block
+
+with open(file_path, "wb") as f:
+    while True:
+        free = shutil.disk_usage("/").free
+        if free <= target_free:
+            print(f"Disk fill completed. Free space left: {free // (1024 * 1024)} MB")
+            break
+        try:
+            f.write(block)
+        except Exception as e:
+            print("Disk write error:", e)
+            break
+EOF
